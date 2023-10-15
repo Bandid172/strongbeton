@@ -23,6 +23,7 @@ export default {
         return {
             menuIcon: true,
             closeIcon: false,
+            isHovered: false,
             navbarStyle: {
                 height: '0',
                 bottom: '12px',
@@ -50,6 +51,14 @@ export default {
             for(let i = 0; i < this.navbarChildren.length; i++) {
                 this.navbarChildren[i].style.transform = 'translateY(-50px)'
             }
+        },
+
+        handleHover() {
+            this.isHovered = true
+        },
+
+        handleMouseOver() {
+            this.isHovered = false
         }
     },
 
@@ -144,5 +153,4 @@ export default {
         transition: .3s ease;
     }
 }
-
 </style>

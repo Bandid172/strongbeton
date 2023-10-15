@@ -4,7 +4,7 @@
             <div class="intro">
                 <h1>Any volume in any weather</h1>
                 <p>We guarantee delivery thanks to automated production, streamlined logistics and chemical additives.</p>
-                <button>Find out the price</button>
+                <router-link to="/services" class="btn">Find out the price</router-link>
             </div>
         </div>
         <main>
@@ -14,7 +14,7 @@
                     <p>Under the trademark StrongBeton” we produce concrete mixtures for all types of construction work.</p>
                     <p>Pouring foundations, walls and courtyards, floor screeds,<br>cushions for highways, creating reinforced concrete products, building bridges, dams, skyscrapers, etc.</p>
                 </div>
-                <button>Ready Mixed Concrete</button>
+                <router-link to="/services" class="main-btn">Ready Mixed Concrete</router-link>
             </section>
             <section class="main__preferences">
                 <h2>Why choose us?</h2>
@@ -53,12 +53,12 @@
                         a request on the website or calling us. We look
                         forward to your call!
                     </p>
-                    <button>More Details</button>
+                    <router-link to="/services" class="btn btn-details">More Details</router-link>
                 </div>
             </section>
             <section class="main__team">
                 <h3>OUR TEAM</h3>
-                <div class="team__cards">
+                <div class="team__cards snaps-inline">
                     <div class="team__card">
                         <img src="../assets/Rectangle37.png"/>
                         <div class="credentials">
@@ -130,8 +130,9 @@ export default {
     font-size: 1.2rem;
 }
 
-.intro button {
+.btn {
     border-radius: 15px;
+    text-decoration: none;
     background: #EA7E15;
     color: #fff;
     padding: 1rem 2rem;
@@ -178,7 +179,9 @@ export default {
     margin: 1rem 0;
 }
 
-.main__intro button {
+.main-btn {
+    text-decoration: none;
+    color: #000;
     border-radius: 15px;
     border: 2px solid #B3B184;
     background: #FFF;
@@ -266,15 +269,9 @@ export default {
     margin-left: 40px;
 }
 
-.rental__info button {
-    background-color: #EA7E15;
-    color: #fff;
-    border-radius: 15px;
-    border: none;
-    outline: none;
+.btn-details {
     padding: 1rem 3rem;
     font-weight: 500;
-    cursor: pointer;
     align-self: center;
     margin-top: 15px;
 }
@@ -301,15 +298,41 @@ export default {
 
 .team__cards {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-auto-flow: column;
+
+    overflow-y: hidden;
+    overflow-x: auto;
+    overscroll-behavior: contain;
+}
+
+.team__cards::-webkit-scrollbar {
+    border-radius: 6px;
+    background: #BCBCBC;
+}
+
+.team__cards::-webkit-scrollbar-thumb {
+    background: #3E3E3E;
+    border-radius: 6px
+}
+
+.snaps-inline {
+    scroll-snap-type: inline mandatory;
+}
+
+.snaps-inline > * {
+    scroll-snap-align: start;
 }
 
 .team__card {
-    width: 300px;
-    height: 430px;
+    width: 250px;
+    height: 400px;
     background: #3E3E3E;
     border-radius: 10px;
     margin-top: 10px;
+    margin-bottom: 10px;
+    margin-right: 20px;
+    align-self: center;
+    justify-self: center;
 }
 
 .team__card img {
@@ -322,18 +345,4 @@ export default {
     text-align: center;
 }
 
-@media (max-width: 1408px) {
-    .team__cards {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 735px) {
-    .team__cards {
-        grid-template-columns: repeat(1, 1fr);
-        text-align: center;
-        justify-content: center;
-        align-items: center;
-    }
-}
 </style>

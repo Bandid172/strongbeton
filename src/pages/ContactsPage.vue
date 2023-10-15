@@ -61,10 +61,6 @@ export default {
 
 <style scoped>
 
-.contacts {
-    height: 100vh;
-}
-
 .contacts h1 {
     padding: 1rem 3rem;
 }
