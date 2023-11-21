@@ -14,11 +14,11 @@
             </section>
             <section class="application__submit">
                 <h2>Submit your application</h2>
-                <form class="application-form">
+                <form class="application-form" @submit.prevent="submitApplication">
                     <label for="name">Your Name</label>
-                    <input type="text" id="name">
+                    <input v-model="formData.name" type="text" id="name">
                     <label for="phoneNumber">Your Phone Number</label>
-                    <input type="text" id="phoneNumber">
+                    <input v-model="formData.phoneNumber" type="text" id="phoneNumber">
                     <button>Submit</button>
                 </form>
             </section>
@@ -30,8 +30,28 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
-    name: "FooterRow"
+    name: "FooterRow",
+    data() {
+        return {
+            formData: {
+                name: null,
+                phoneNumber: null
+            }
+        }
+    },
+    methods: {
+        ...mapActions(['pushClient']),
+        submitApplication() {
+            this.pushClient(this.formData)
+                .then(() => {
+                    this.formData.name = ''
+                    this.formData.phoneNumber = ''
+                })
+        }
+    }
 }
 </script>
 

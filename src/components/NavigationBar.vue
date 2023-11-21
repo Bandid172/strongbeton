@@ -73,7 +73,21 @@ export default {
 
         // Convert the HTMLCollection into an array and assign it to data property
         this.navbarChildren = Array.from(navbarChildren)
-    }
+    },
+
+    watch: {
+        '$route': {
+            handler(newRoute, oldRoute) {
+                if (newRoute !== oldRoute) {
+                    // Route has changed, so you can set the navbar height to 0 here
+                    this.navbarStyle.height = 0;
+                    this.closeIcon = false;
+                    this.menuIcon = true
+                }
+            },
+            deep: true,
+        },
+    },
 }
 </script>
 
@@ -142,6 +156,7 @@ export default {
         box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .1);
         overflow: hidden;
         transition: .3s ease;
+        z-index: 100;
     }
 
     .navbar a {

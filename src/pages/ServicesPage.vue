@@ -1,23 +1,27 @@
 <template>
-    <div class="modal-box">
-        <div class="modal-window">
-            <h1>Order form</h1>
-            <form>
-                <label for="name">Name<span>*</span></label>
-                <input type="text" id="name" required placeholder="John Doe"/>
-                <label for="password">Phone Number<span>*</span></label>
-                <input type="text" id="password" required placeholder="12345678" />
-                <button>Submit Application</button>
-            </form>
-        </div>
-    </div>
     <div class="services">
+        <div class="modal" v-if="showModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <span class="close" @click="closeModal">&times;</span>
+                    <slot>
+                        <form @submit.prevent="submitApplication">
+                            <label for="name">Name<span>*</span></label>
+                            <input v-model="formData.name" id="name" type="text" required placeholder="John Doe" />
+                            <label for="phoneNumber">Number<span>*</span></label>
+                            <input v-model="formData.phoneNumber" id="phoneNumber" type="text" required placeholder="+9989 77 777 77 77" />
+                            <button>Submit Application</button>
+                        </form>
+                    </slot>
+                </div>
+            </div>
+        </div>
         <div class="heading">
             <h1>Services</h1>
             <hr>
         </div>
         <section class="main">
-            <div>
+            <div class="main--info">
                 <h1>Ready-mixed concrete</h1>
                 <ul>
                     <li>Foundation pouring and screeding</li>
@@ -37,102 +41,80 @@
             </div>
             <section class="main__products">
                 <div class="products__cards snaps-inline">
-                    <div class="products__card">
+                    <div class="products__card" v-for="product in getProducts" :key="product.id">
                         <img src="../assets/m100.png"/>
                         <div class="credentials">
-                            <h2>M100</h2>
-                            <p>Price</p>
-                        </div>
-                    </div>
-                    <div class="products__card">
-                        <img src="../assets/m200.png"/>
-                        <div class="credentials">
-                            <h2>M200</h2>
-                            <p>Price</p>
-                        </div>
-                    </div>
-                    <div class="products__card">
-                        <img src="../assets/m300.png"/>
-                        <div class="credentials">
-                            <h2>M300</h2>
-                            <p>Price</p>
-                        </div>
-                    </div>
-                    <div class="products__card">
-                        <img src="../assets/m400.png"/>
-                        <div class="credentials">
-                            <h2>M400</h2>
-                            <p>Price</p>
-                        </div>
-                    </div>
-                    <div class="products__card">
-                        <img src="../assets/m550.png"/>
-                        <div class="credentials">
-                            <h2>M550</h2>
-                            <p>Price</p>
-                        </div>
-                    </div>
-                    <div class="products__card">
-                        <img src="../assets/m600.png"/>
-                        <div class="credentials">
-                            <h2>M600</h2>
-                            <p>Price</p>
-                        </div>
-                    </div>
-                    <div class="products__card">
-                        <img src="../assets/m700.png"/>
-                        <div class="credentials">
-                            <h2>M700</h2>
-                            <p>Price</p>
-                        </div>
-                    </div>
-                    <div class="products__card">
-                        <img src="../assets/m800.png"/>
-                        <div class="credentials">
-                            <h2>M800</h2>
-                            <p>Price</p>
+                            <h2>{{ product.name }}</h2>
+                            <p>{{ product.price }}</p>
                         </div>
                     </div>
                 </div>
+                <button @click="openModal">Order Concrete</button>
             </section>
+        </section>
+        <section class="machinery-rental">
+            <div class="heading">
+                <h1>Machinery Rental</h1>
+                <CarouselSlider />
+            </div>
         </section>
     </div>
 </template>
 
 <script>
+import CarouselSlider from "@/components/CarouselSlider";
+import { mapActions, mapGetters } from 'vuex'
+
 export default {
     name: "ServicesPage",
+    components: {CarouselSlider},
+    data() {
+        return {
+            showModal: false,
+            carouselSlides: [
+                { image: require('../assets/Rectangle59.png')},
+                { image: require('../assets/image1.jpg')},
+                { image: require('../assets/image2.jpg')},
+                { image: require('../assets/image3.jpg')},
+                { image: require('../assets/image4.jpg')},
+            ],
+            formData: {
+                name: null,
+                phoneNumber: null
+            }
+        }
+    },
+    methods: {
+        ...mapActions(['fetchProducts','pushClient']),
+
+        submitApplication() {
+            this.pushClient(this.formData)
+                .then(() => {
+                    this.showModal = false
+                })
+        },
+
+        openModal() {
+            this.showModal = true
+        },
+        closeModal() {
+            this.showModal = false
+        },
+    },
+
+    mounted() {
+        this.fetchProducts()
+    },
+
+    computed: {
+        ...mapGetters(['getProducts'])
+    }
 }
 </script>
 
 <style scoped>
 .services {
     position: relative;
-}
-
-.modal-box {
-    border: 1px solid red;
-    position: absolute;
-    padding: 2rem;
-    z-index: 100;
-    margin: 0 auto;
-}
-
-.modal-window {
-    z-index: 100;
-    max-width: 508px;
-    height: 458px;
-    display: flex;
-    align-items: center;
-    gap: 50px;
-    background: rgba(0,0,0,.1);
-    backdrop-filter: blur(50px);
-    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .1);
-    flex-direction: column;
-}
-
-.modal-window h1 {
-    padding: 1rem 0;
 }
 
 .heading h1{
@@ -155,7 +137,7 @@ export default {
 }
 
 .main img {
-    max-width: 500px;
+    width: 500px;
 }
 
 .main__products {
@@ -203,6 +185,19 @@ export default {
     width: 100%;
 }
 
+.products button {
+    border-radius: 15px;
+    text-decoration: none;
+    background: #EA7E15;
+    color: #fff;
+    padding: 1rem 2rem;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    margin: 1.5rem 0;
+}
+
 .credentials {
     padding: .5rem 0;
     color: #FFFFFF;
@@ -210,17 +205,16 @@ export default {
     background: #3E3E3E;
 }
 
-
-.modal-window form {
+.modal-content form {
     display: flex;
     flex-direction: column;
     width: 100%;
     padding: 0 3rem;
 }
 
-.modal-window form input {
+.modal-content form input {
     border: 1px solid #D9D9D9;
-    color: #fff;
+    color: #000;
     font-family: 'Poppins',sans-serif;
     height: 36px;
     border-radius: 6px;
@@ -229,7 +223,7 @@ export default {
     margin-bottom: 10px;
 }
 
-.modal-window form input:focus {
+.modal-content form input:focus {
     background-color: rgba(16, 156, 241, 0.16);
     border: 1px solid #109CF1;
 }
@@ -255,6 +249,55 @@ form button {
     outline: none;
     border: none;
     align-self: center;
+    cursor: pointer;
+}
+
+@media (max-width: 1089px) {
+    .main {
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-evenly;
+        gap: 20px;
+    }
+
+    .main--info {
+        align-self: flex-start;
+    }
+
+    .main img {
+        width: 100%;
+    }
+}
+
+.modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+}
+
+.modal-dialog {
+    max-width: 80%; /* Adjust this as needed */
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    font-size: 1.5rem;
+    top: 10px;
+    right: 10px;
     cursor: pointer;
 }
 </style>
